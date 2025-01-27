@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String @unique
+  password  String
+  role      String @default("user")
+  challenges ChallengeParticipant[]
+}
+
+model Challenge {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  title       String @unique
+  description String
+  deadline    DateTime
+  duration    Int      // Duration in days
+  moneyPrize  Float
+  seniority   Seniority
+  status      Status @default(Open)
+  category      String
+  skills       String[]
+  contactEmail String
+  createdAt   DateTime @default(now())
+  participants ChallengeParticipant[]
+}
+
+model ChallengeParticipant {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String
+  challengeId String
+  user       User     @relation(fields: [userId], references: [id])
+  challenge  Challenge @relation(fields: [challengeId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, challengeId])
+}
+
+enum Seniority {
+  Junior
+  Intermediate
+  Senior
+}
+
+enum Status {
+  Open
+  Ongoing
+  Completed
+}
