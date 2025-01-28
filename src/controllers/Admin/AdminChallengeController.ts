@@ -52,45 +52,46 @@ class AdminChallengeController {
     static async updateChallenge(req: Request, res: Response): Promise<void> {
         try {
             const { challengeid } = req.params;
-            const { title, description, deadline, moneyPrize, seniority, category, skills, contactEmail } = req.body;
-
+            const { title, description, deadline, moneyPrize, seniority, status, category, skills, contactEmail } = req.body;
+    
+            // Check if the challenge exists
             const challenge = await prisma.challenge.findUnique({ where: { id: challengeid } });
-            if (!challenge) {
-                res.status(404).json({ message: "Challenge not found" });
-                return;
-            }
-
-            const deadlineDate = new Date(deadline);
-            const createdAt = new Date();
-
-            if (deadlineDate <= createdAt) {
+            if (!challenge) res.status(404).json({ message: "Challenge not found" });
+    
+            // Validate deadline if provided
+            if (deadline && new Date(deadline) <= new Date()) {
                 res.status(400).json({ message: "Deadline must be in the future" });
-                return;
             }
-
-            const durationInDays = Math.ceil((deadlineDate.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24));
-
+    
+            // Prepare data for update
+            const data = {
+                ...(title && { title }),
+                ...(description && { description }),
+                ...(deadline && {
+                    deadline: new Date(deadline),
+                    duration: Math.ceil((new Date(deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)),
+                }),
+                ...(moneyPrize && { moneyPrize }),
+                ...(seniority && { seniority }),
+                ...(status && { status }),
+                ...(category && { category }),
+                ...(skills && { skills }),
+                ...(contactEmail && { contactEmail }),
+            };
+    
+            // Update the challenge
             const updatedChallenge = await prisma.challenge.update({
                 where: { id: challengeid },
-                data: {
-                    title,
-                    description,
-                    deadline: deadlineDate,
-                    duration: durationInDays,
-                    moneyPrize,
-                    seniority,
-                    category,
-                    skills,
-                    contactEmail,
-                },
+                data,
             });
-
+    
             res.status(200).json({ message: "Challenge updated successfully", updatedChallenge });
         } catch (error) {
-            console.error('Update challenge error:', error);
+            console.error("Update challenge error:", error);
             res.status(500).json({ message: "Server error" });
         }
     }
+    
 
     static async deleteChallenge(req: Request, res: Response): Promise<void> {
         try {

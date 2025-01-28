@@ -17,7 +17,11 @@ router.get("/challenge/participants/:challengeId", verifyToken, authorizeRole("a
 
 router.post("/challenge/add-participant", verifyToken, authorizeRole("user"), UserChallengeController.addParticipantToChallenge);
 router.get("/challenge/all-challenges", UserChallengeController.getAllChallenges);
-router.get("/challenge/my-challenges/", verifyToken, authorizeRole("user"), UserChallengeController.myChallenges);
+router.get("/challenge/challenge-details/:challengeId", UserChallengeController.getChallengeDetails);
+router.get("/challenge/my-challenges/:userId", verifyToken, authorizeRole("user"), UserChallengeController.getUserChallenges);
+router.get("/challenge/open-challenges/:userId", verifyToken, authorizeRole("user"), UserChallengeController.getUserOpenChallenges);
+router.get("/challenge/ongoing-challenges/:userId", verifyToken, authorizeRole("user"), UserChallengeController.getUserOngoingChallenges);
+router.get("/challenge/completed-challenges/:userId", verifyToken, authorizeRole("user"), UserChallengeController.getUserCompletedChallenges);
 
 
 export default router;
