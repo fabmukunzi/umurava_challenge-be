@@ -1,6 +1,5 @@
 import { prisma } from "../config/db";
 import { challenge, Prisma } from "@prisma/client";
-import logger from "../config/logger";
 
 class NotFoundError extends Error {
   constructor(message: string) {
@@ -61,7 +60,6 @@ class ChallengeService {
   static async createChallenge(
     data: Prisma.challengeCreateInput,
   ): Promise<challenge> {
-    logger.info("Creating a new challenge", { data });
 
     // Check for existing challenge title
     const existingChallenge = await prisma.challenge.findFirst({
@@ -115,7 +113,6 @@ class ChallengeService {
     id: string,
     data: Prisma.challengeUpdateInput,
   ): Promise<challenge> {
-    logger.info("Updating challenge", { id, data });
 
     // Check if challenge exists
     const existingChallenge = await prisma.challenge.findUnique({

@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import ChallengeCategoryService from "../services/challengeCategoryService";
-import logger from "../config/logger";
 import { serializeBigInt } from "../utils/serialization";
 
 class ChallengeCategoryController {
@@ -26,7 +25,6 @@ class ChallengeCategoryController {
         category: serializeBigInt(category),
       });
     } catch (error: unknown) {
-      logger.error("Error creating challenge category", { error });
       if (error instanceof Error) {
         res.status(500).json({ message: error.message || "Server error" });
       } else {
@@ -47,7 +45,6 @@ class ChallengeCategoryController {
         categories: serializeBigInt(categories),
       });
     } catch (error: unknown) {
-      logger.error("Error retrieving challenge categories", { error });
       if (error instanceof Error) {
         res.status(500).json({ message: error.message || "Server error" });
       } else {
@@ -73,7 +70,6 @@ class ChallengeCategoryController {
 
       res.status(200).json({ category: serializeBigInt(category) });
     } catch (error: unknown) {
-      logger.error("Error retrieving challenge category by ID", { error });
       if (error instanceof Error) {
         res.status(500).json({ message: error.message || "Server error" });
       } else {
@@ -108,7 +104,6 @@ class ChallengeCategoryController {
         category: serializeBigInt(updatedCategory),
       });
     } catch (error: unknown) {
-      logger.error("Error updating challenge category", { error });
       if (error instanceof Error) {
         res.status(500).json({ message: error.message || "Server error" });
       } else {
@@ -130,7 +125,6 @@ class ChallengeCategoryController {
         .status(200)
         .json({ message: "Challenge category deleted successfully" });
     } catch (error: unknown) {
-      logger.error("Error deleting challenge category", { error });
       if (error instanceof Error) {
         res.status(500).json({ message: error.message || "Server error" });
       } else {
