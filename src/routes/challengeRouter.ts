@@ -8,6 +8,6 @@ challengeRouter.patch("/:challengeid", ChallengeController.updateChallenge);
 challengeRouter.delete("/:challengeid", ChallengeController.createChallenge);
 challengeRouter.get("/", ChallengeController.getAllChallenges);
 challengeRouter.get("/:challengeid", ChallengeController.getSingleChallenge);
-challengeRouter.get("/search", ChallengeController.searchChallenges);
+// challengeRouter.get("/search", ChallengeController.searchChallenges);
 
 export default challengeRouter;

@@ -245,43 +245,43 @@ class ChallengeService {
     await prisma.challenge.delete({ where: { id } });
   }
 
-  // Search challenges by title, description, or skills
-  static async searchChallenges(
-    searchTerm: string,
-    page: number = 1,
-    limit: number = 10,
-  ): Promise<{ challenges: challenge[]; total: number }> {
-    if (page < 1 || limit < 1 || limit > 100) {
-      throw new ValidationError(
-        "Page and limit must be positive integers, and limit cannot exceed 100",
-      );
-    }
+  // // Search challenges by title, description, or skills
+  // static async searchChallenges(
+  //   searchTerm: string,
+  //   page: number = 1,
+  //   limit: number = 10,
+  // ): Promise<{ challenges: challenge[]; total: number }> {
+  //   if (page < 1 || limit < 1 || limit > 100) {
+  //     throw new ValidationError(
+  //       "Page and limit must be positive integers, and limit cannot exceed 100",
+  //     );
+  //   }
 
-    const skip = (page - 1) * limit;
+  //   const skip = (page - 1) * limit;
 
-    const where: Prisma.challengeWhereInput = {
-      OR: [
-        { challengeTitle: { contains: searchTerm, mode: "insensitive" } },
-        { description: { contains: searchTerm, mode: "insensitive" } },
-        { skills: { has: searchTerm } },
-      ],
-    };
+  //   const where: Prisma.challengeWhereInput = {
+  //     OR: [
+  //       { challengeTitle: { contains: searchTerm, mode: "insensitive" } },
+  //       { description: { contains: searchTerm, mode: "insensitive" } },
+  //       { skills: { has: searchTerm } },
+  //     ],
+  //   };
 
-    const [challenges, total] = await Promise.all([
-      prisma.challenge.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { createdAt: "desc" },
-        include: {
-          category: true,
-        },
-      }),
-      prisma.challenge.count({ where }),
-    ]);
+  //   const [challenges, total] = await Promise.all([
+  //     prisma.challenge.findMany({
+  //       where,
+  //       skip,
+  //       take: limit,
+  //       orderBy: { createdAt: "desc" },
+  //       include: {
+  //         category: true,
+  //       },
+  //     }),
+  //     prisma.challenge.count({ where }),
+  //   ]);
 
-    return { challenges, total };
-  }
+  //   return { challenges, total };
+  // }
 }
 
 export default ChallengeService;
