@@ -8,12 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("../config/db");
-const logger_1 = __importDefault(require("../config/logger"));
 class ChallengeCategoryService {
     // Create a new challenge category
     static createChallengeCategory(data) {
@@ -33,13 +29,9 @@ class ChallengeCategoryService {
                         description: data.description,
                     },
                 });
-                logger_1.default.info("Challenge category created successfully", {
-                    categoryId: category.id,
-                });
                 return category;
             }
             catch (error) {
-                logger_1.default.error("Error creating challenge category", { error });
                 throw error;
             }
         });
@@ -52,13 +44,9 @@ class ChallengeCategoryService {
                 const categories = yield db_1.prisma.challengeCategory.findMany({
                     orderBy: { createdAt: "desc" },
                 });
-                logger_1.default.info("Retrieved all challenge categories", {
-                    total: categories.length,
-                });
                 return categories;
             }
             catch (error) {
-                logger_1.default.error("Error retrieving challenge categories", { error });
                 throw error;
             }
         });
@@ -73,11 +61,9 @@ class ChallengeCategoryService {
                 if (!category) {
                     throw new Error("Challenge category not found");
                 }
-                logger_1.default.info("Retrieved challenge category by ID", { categoryId: id });
                 return category;
             }
             catch (error) {
-                logger_1.default.error("Error retrieving challenge category by ID", { error });
                 throw error;
             }
         });
@@ -110,13 +96,9 @@ class ChallengeCategoryService {
                     where: { id },
                     data,
                 });
-                logger_1.default.info("Challenge category updated successfully", {
-                    categoryId: id,
-                });
                 return updatedCategory;
             }
             catch (error) {
-                logger_1.default.error("Error updating challenge category", { error });
                 throw error;
             }
         });
@@ -136,12 +118,8 @@ class ChallengeCategoryService {
                 yield db_1.prisma.challengeCategory.delete({
                     where: { id },
                 });
-                logger_1.default.info("Challenge category deleted successfully", {
-                    categoryId: id,
-                });
             }
             catch (error) {
-                logger_1.default.error("Error deleting challenge category", { error });
                 throw error;
             }
         });

@@ -1,6 +1,6 @@
+/* eslint-disable no-useless-catch */
 import { Prisma } from "@prisma/client";
 import { prisma } from "../config/db";
-import logger from "../config/logger";
 
 class ChallengeCategoryService {
   // Create a new challenge category
@@ -25,12 +25,8 @@ class ChallengeCategoryService {
         },
       });
 
-      logger.info("Challenge category created successfully", {
-        categoryId: category.id,
-      });
       return category;
     } catch (error: unknown) {
-      logger.error("Error creating challenge category", { error });
       throw error;
     }
   }
@@ -45,12 +41,8 @@ class ChallengeCategoryService {
         orderBy: { createdAt: "desc" },
       });
 
-      logger.info("Retrieved all challenge categories", {
-        total: categories.length,
-      });
       return categories;
     } catch (error: unknown) {
-      logger.error("Error retrieving challenge categories", { error });
       throw error;
     }
   }
@@ -68,10 +60,8 @@ class ChallengeCategoryService {
         throw new Error("Challenge category not found");
       }
 
-      logger.info("Retrieved challenge category by ID", { categoryId: id });
       return category;
     } catch (error: unknown) {
-      logger.error("Error retrieving challenge category by ID", { error });
       throw error;
     }
   }
@@ -111,12 +101,8 @@ class ChallengeCategoryService {
         data,
       });
 
-      logger.info("Challenge category updated successfully", {
-        categoryId: id,
-      });
       return updatedCategory;
     } catch (error: unknown) {
-      logger.error("Error updating challenge category", { error });
       throw error;
     }
   }
@@ -137,12 +123,7 @@ class ChallengeCategoryService {
       await prisma.challengeCategory.delete({
         where: { id },
       });
-
-      logger.info("Challenge category deleted successfully", {
-        categoryId: id,
-      });
     } catch (error: unknown) {
-      logger.error("Error deleting challenge category", { error });
       throw error;
     }
   }

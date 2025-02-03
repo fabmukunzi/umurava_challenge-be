@@ -8,12 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("../config/db");
-const logger_1 = __importDefault(require("../config/logger"));
 class NotFoundError extends Error {
     constructor(message) {
         super(message);
@@ -59,7 +55,6 @@ class ChallengeService {
     // Create a new challenge
     static createChallenge(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            logger_1.default.info("Creating a new challenge", { data });
             // Check for existing challenge title
             const existingChallenge = yield db_1.prisma.challenge.findFirst({
                 where: { challengeTitle: data.challengeTitle },
@@ -98,7 +93,6 @@ class ChallengeService {
     // Update an existing challenge
     static updateChallenge(id, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            logger_1.default.info("Updating challenge", { id, data });
             // Check if challenge exists
             const existingChallenge = yield db_1.prisma.challenge.findUnique({
                 where: { id },

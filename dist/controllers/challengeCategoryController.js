@@ -13,8 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const challengeCategoryService_1 = __importDefault(require("../services/challengeCategoryService"));
-const logger_1 = __importDefault(require("../config/logger"));
-const serialization_1 = require("../utils/serialization");
 class ChallengeCategoryController {
     static createChallengeCategory(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -30,11 +28,10 @@ class ChallengeCategoryController {
                 });
                 res.status(201).json({
                     message: "Challenge category created successfully",
-                    category: (0, serialization_1.serializeBigInt)(category),
+                    category: category,
                 });
             }
             catch (error) {
-                logger_1.default.error("Error creating challenge category", { error });
                 if (error instanceof Error) {
                     res.status(500).json({ message: error.message || "Server error" });
                 }
@@ -49,11 +46,10 @@ class ChallengeCategoryController {
             try {
                 const categories = yield challengeCategoryService_1.default.getAllChallengeCategories();
                 res.status(200).json({
-                    categories: (0, serialization_1.serializeBigInt)(categories),
+                    categories: categories,
                 });
             }
             catch (error) {
-                logger_1.default.error("Error retrieving challenge categories", { error });
                 if (error instanceof Error) {
                     res.status(500).json({ message: error.message || "Server error" });
                 }
@@ -72,10 +68,9 @@ class ChallengeCategoryController {
                     res.status(404).json({ message: "Challenge category not found" });
                     return;
                 }
-                res.status(200).json({ category: (0, serialization_1.serializeBigInt)(category) });
+                res.status(200).json({ category: category });
             }
             catch (error) {
-                logger_1.default.error("Error retrieving challenge category by ID", { error });
                 if (error instanceof Error) {
                     res.status(500).json({ message: error.message || "Server error" });
                 }
@@ -102,11 +97,10 @@ class ChallengeCategoryController {
                 });
                 res.status(200).json({
                     message: "Challenge category updated successfully",
-                    category: (0, serialization_1.serializeBigInt)(updatedCategory),
+                    category: updatedCategory,
                 });
             }
             catch (error) {
-                logger_1.default.error("Error updating challenge category", { error });
                 if (error instanceof Error) {
                     res.status(500).json({ message: error.message || "Server error" });
                 }
@@ -126,7 +120,6 @@ class ChallengeCategoryController {
                     .json({ message: "Challenge category deleted successfully" });
             }
             catch (error) {
-                logger_1.default.error("Error deleting challenge category", { error });
                 if (error instanceof Error) {
                     res.status(500).json({ message: error.message || "Server error" });
                 }

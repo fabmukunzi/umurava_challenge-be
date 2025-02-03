@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import ChallengeCategoryService from "../services/challengeCategoryService";
-import logger from "../config/logger";
-import { serializeBigInt } from "../utils/serialization";
 
 class ChallengeCategoryController {
   static async createChallengeCategory(
@@ -23,10 +21,9 @@ class ChallengeCategoryController {
 
       res.status(201).json({
         message: "Challenge category created successfully",
-        category: serializeBigInt(category),
+        category: category,
       });
     } catch (error: unknown) {
-      logger.error("Error creating challenge category", { error });
       if (error instanceof Error) {
         res.status(500).json({ message: error.message || "Server error" });
       } else {
@@ -44,10 +41,9 @@ class ChallengeCategoryController {
         await ChallengeCategoryService.getAllChallengeCategories();
 
       res.status(200).json({
-        categories: serializeBigInt(categories),
+        categories: categories,
       });
     } catch (error: unknown) {
-      logger.error("Error retrieving challenge categories", { error });
       if (error instanceof Error) {
         res.status(500).json({ message: error.message || "Server error" });
       } else {
@@ -71,9 +67,8 @@ class ChallengeCategoryController {
         return;
       }
 
-      res.status(200).json({ category: serializeBigInt(category) });
+      res.status(200).json({ category: category });
     } catch (error: unknown) {
-      logger.error("Error retrieving challenge category by ID", { error });
       if (error instanceof Error) {
         res.status(500).json({ message: error.message || "Server error" });
       } else {
@@ -105,10 +100,9 @@ class ChallengeCategoryController {
 
       res.status(200).json({
         message: "Challenge category updated successfully",
-        category: serializeBigInt(updatedCategory),
+        category: updatedCategory,
       });
     } catch (error: unknown) {
-      logger.error("Error updating challenge category", { error });
       if (error instanceof Error) {
         res.status(500).json({ message: error.message || "Server error" });
       } else {
@@ -130,7 +124,6 @@ class ChallengeCategoryController {
         .status(200)
         .json({ message: "Challenge category deleted successfully" });
     } catch (error: unknown) {
-      logger.error("Error deleting challenge category", { error });
       if (error instanceof Error) {
         res.status(500).json({ message: error.message || "Server error" });
       } else {
