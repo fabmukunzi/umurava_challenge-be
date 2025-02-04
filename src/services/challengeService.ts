@@ -180,7 +180,7 @@ class ChallengeService {
   // Get all challenges with pagination and filters
   static async getAllChallenges(
     page: number = 1,
-    limit: number = 10,
+    limit: number = 12, // Updated default limit to 12
     categoryId?: string,
     seniority?: string[],
   ): Promise<{ challenges: challenge[]; total: number }> {

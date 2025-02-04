@@ -57,24 +57,39 @@ class ChallengeController {
 
   static async getAllChallenges(req: Request, res: Response): Promise<void> {
     try {
-      const { page = 1, limit = 10, categoryId, seniority } = req.query;
+      const { page = "1", limit = "12", categoryId, seniority } = req.query;
+
+      // Convert query parameters
+      const parsedPage = parseInt(page as string, 10);
+      const parsedLimit = parseInt(limit as string, 10);
+
+      // Ensure pagination values are valid
+      if (isNaN(parsedPage) || parsedPage < 1) {
+        res.status(400).json({ message: "Invalid page number" });
+        return; // Just exit the function instead of returning Response
+      }
+      if (isNaN(parsedLimit) || parsedLimit < 1 || parsedLimit > 100) {
+        res.status(400).json({ message: "Limit must be between 1 and 100" });
+        return;
+      }
 
       // Convert seniority query parameter to an array if it's a string
       const seniorityArray =
         typeof seniority === "string" ? [seniority] : seniority;
 
       const { challenges, total } = await ChallengeService.getAllChallenges(
-        Number(page),
-        Number(limit),
+        parsedPage,
+        parsedLimit,
         categoryId as string,
         seniorityArray as string[],
       );
 
       res.status(200).json({
-        challenges: challenges,
+        challenges,
         total,
-        page: Number(page),
-        limit: Number(limit),
+        page: parsedPage,
+        limit: parsedLimit,
+        totalPages: Math.ceil(total / parsedLimit),
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -95,6 +110,27 @@ class ChallengeController {
       }
 
       res.status(200).json({ challenge: challenge });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        res.status(500).json({ message: error.message || "Server error" });
+      } else {
+        res.status(500).json({ message: "Unknown error occurred" });
+      }
+    }
+  }
+
+  static async deleteChallenge(req: Request, res: Response): Promise<void> {
+    try {
+      const { challengeid } = req.params;
+
+      if (!challengeid || !/^[0-9a-fA-F]{24}$/.test(challengeid)) {
+        res.status(400).json({ message: "Invalid challenge ID" });
+        return;
+      }
+
+      await ChallengeService.deleteChallenge(challengeid);
+
+      res.status(200).json({ message: "Challenge deleted successfully" });
     } catch (error: unknown) {
       if (error instanceof Error) {
         res.status(500).json({ message: error.message || "Server error" });
