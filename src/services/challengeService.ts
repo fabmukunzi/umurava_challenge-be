@@ -177,13 +177,16 @@ class ChallengeService {
     });
   }
 
-  // Get all challenges with pagination and filters
   static async getAllChallenges(
     page: number = 1,
-    limit: number = 12, // Updated default limit to 12
+    limit: number = 12,
     categoryId?: string,
     seniority?: string[],
-  ): Promise<{ challenges: challenge[]; total: number }> {
+  ): Promise<{
+    challenges: challenge[];
+    total: number;
+    statusCounts: Record<"Open" | "Ongoing" | "Completed", number>;
+  }> {
     if (page < 1 || limit < 1 || limit > 100) {
       throw new ValidationError(
         "Page and limit must be positive integers, and limit cannot exceed 100",
@@ -191,30 +194,55 @@ class ChallengeService {
     }
 
     const skip = (page - 1) * limit;
+    const now = new Date();
 
-    // Build where clause based on filters
+    // Build filter query
     const where: Prisma.challengeWhereInput = {};
     if (categoryId) where.categoryId = categoryId;
     if (seniority && seniority.length > 0) {
-      where.seniority = {
-        hasEvery: seniority,
-      };
+      where.seniority = { hasEvery: seniority };
     }
 
+    // Fetch challenges and count
     const [challenges, total] = await Promise.all([
       prisma.challenge.findMany({
         skip,
         take: limit,
         where,
         orderBy: { createdAt: "desc" },
-        include: {
-          category: true,
-        },
+        include: { category: true },
       }),
       prisma.challenge.count({ where }),
     ]);
 
-    return { challenges, total };
+    // Define possible statuses
+    type ChallengeStatus = "Open" | "Ongoing" | "Completed";
+
+    // eslint-disable-next-line prefer-const
+    let statusCounts: Record<ChallengeStatus, number> = {
+      Open: 0,
+      Ongoing: 0,
+      Completed: 0,
+    };
+
+    // Assign status to each challenge
+    const updatedChallenges = challenges.map((challenge) => {
+      const { createdAt, startDate, deadline } = challenge;
+      let status: ChallengeStatus;
+
+      if (new Date(createdAt) <= now && now < new Date(startDate)) {
+        status = "Open";
+      } else if (new Date(startDate) <= now && now < new Date(deadline)) {
+        status = "Ongoing";
+      } else {
+        status = "Completed";
+      }
+
+      statusCounts[status] += 1; // Increment respective status count
+      return { ...challenge, status };
+    });
+
+    return { challenges: updatedChallenges, total, statusCounts };
   }
 
   // Get a single challenge by ID

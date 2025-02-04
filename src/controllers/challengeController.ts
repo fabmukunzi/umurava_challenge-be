@@ -66,7 +66,7 @@ class ChallengeController {
       // Ensure pagination values are valid
       if (isNaN(parsedPage) || parsedPage < 1) {
         res.status(400).json({ message: "Invalid page number" });
-        return; // Just exit the function instead of returning Response
+        return;
       }
       if (isNaN(parsedLimit) || parsedLimit < 1 || parsedLimit > 100) {
         res.status(400).json({ message: "Limit must be between 1 and 100" });
@@ -77,16 +77,18 @@ class ChallengeController {
       const seniorityArray =
         typeof seniority === "string" ? [seniority] : seniority;
 
-      const { challenges, total } = await ChallengeService.getAllChallenges(
-        parsedPage,
-        parsedLimit,
-        categoryId as string,
-        seniorityArray as string[],
-      );
+      const { challenges, total, statusCounts } =
+        await ChallengeService.getAllChallenges(
+          parsedPage,
+          parsedLimit,
+          categoryId as string,
+          seniorityArray as string[],
+        );
 
       res.status(200).json({
         challenges,
         total,
+        statusCounts,
         page: parsedPage,
         limit: parsedLimit,
         totalPages: Math.ceil(total / parsedLimit),
