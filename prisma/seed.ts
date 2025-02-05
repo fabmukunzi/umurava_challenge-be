@@ -13,6 +13,7 @@ async function seedSkills() {
     { name: "AI & Machine Learning" },
     { name: "Web3" },
     { name: "Digital Marketing & Communications" },
+    { name: "User Research" },
   ];
 
   for (const skill of skills) {

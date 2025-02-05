@@ -6,6 +6,7 @@ import cors from "cors";
 import morgan from "morgan";
 import challengeRouter from "./routes/challengeRouter";
 import challengeCategoryRouter from "./routes/challengeCategoryRouter";
+import Skillrouter from "./routes/skillsRoutes";
 
 dotenv.config();
 const app = express();
@@ -22,6 +23,7 @@ app.get("/", (req: Request, res: Response): void => {
 // AppRoutes
 app.use("/challenges", challengeRouter);
 app.use("/categories", challengeCategoryRouter);
+app.use("/skills", Skillrouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
