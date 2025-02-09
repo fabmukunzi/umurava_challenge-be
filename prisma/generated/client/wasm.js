@@ -120,7 +120,7 @@ exports.Prisma.ChallengeScalarFieldEnum = {
   moneyPrize: 'moneyPrize',
   seniority: 'seniority',
   categoryId: 'categoryId',
-  skills: 'skills',
+  skillId: 'skillId',
   submissionLink: 'submissionLink',
   contactEmail: 'contactEmail',
   createdAt: 'createdAt'

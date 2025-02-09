@@ -23,7 +23,7 @@ model challenge {
   seniority       String[]
   category        challengeCategory  @relation(fields: [categoryId], references: [id])
   categoryId      String             @db.ObjectId
-  skills          String[]
+  skills          String[]           
   submissionLink  String
   contactEmail    String
   createdAt       DateTime           @default(now())

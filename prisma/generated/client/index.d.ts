@@ -1029,6 +1029,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type SkillCountOutputType
+   */
+
+  export type SkillCountOutputType = {
+    challenges: number
+  }
+
+  export type SkillCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    challenges?: boolean | SkillCountOutputTypeCountChallengesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SkillCountOutputType without action
+   */
+  export type SkillCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SkillCountOutputType
+     */
+    select?: SkillCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SkillCountOutputType without action
+   */
+  export type SkillCountOutputTypeCountChallengesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: challengeWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -1080,7 +1111,7 @@ export namespace Prisma {
     moneyPrize: number
     seniority: number
     categoryId: number
-    skills: number
+    skillId: number
     submissionLink: number
     contactEmail: number
     createdAt: number
@@ -1126,7 +1157,7 @@ export namespace Prisma {
     moneyPrize?: true
     seniority?: true
     categoryId?: true
-    skills?: true
+    skillId?: true
     submissionLink?: true
     contactEmail?: true
     createdAt?: true
@@ -1215,7 +1246,7 @@ export namespace Prisma {
     moneyPrize: string
     seniority: string[]
     categoryId: string
-    skills: string[]
+    skillId: string[]
     submissionLink: string
     contactEmail: string
     createdAt: Date
@@ -1248,11 +1279,12 @@ export namespace Prisma {
     moneyPrize?: boolean
     seniority?: boolean
     categoryId?: boolean
-    skills?: boolean
+    skillId?: boolean
     submissionLink?: boolean
     contactEmail?: boolean
     createdAt?: boolean
     category?: boolean | challengeCategoryDefaultArgs<ExtArgs>
+    skills?: boolean | skillDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["challenge"]>
 
 
@@ -1267,21 +1299,23 @@ export namespace Prisma {
     moneyPrize?: boolean
     seniority?: boolean
     categoryId?: boolean
-    skills?: boolean
+    skillId?: boolean
     submissionLink?: boolean
     contactEmail?: boolean
     createdAt?: boolean
   }
 
-  export type challengeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "challengeTitle" | "description" | "projectBrief" | "startDate" | "deadline" | "moneyPrize" | "seniority" | "categoryId" | "skills" | "submissionLink" | "contactEmail" | "createdAt", ExtArgs["result"]["challenge"]>
+  export type challengeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "challengeTitle" | "description" | "projectBrief" | "startDate" | "deadline" | "moneyPrize" | "seniority" | "categoryId" | "skillId" | "submissionLink" | "contactEmail" | "createdAt", ExtArgs["result"]["challenge"]>
   export type challengeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     category?: boolean | challengeCategoryDefaultArgs<ExtArgs>
+    skills?: boolean | skillDefaultArgs<ExtArgs>
   }
 
   export type $challengePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "challenge"
     objects: {
       category: Prisma.$challengeCategoryPayload<ExtArgs>
+      skills: Prisma.$skillPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1293,7 +1327,7 @@ export namespace Prisma {
       moneyPrize: string
       seniority: string[]
       categoryId: string
-      skills: string[]
+      skillId: string[]
       submissionLink: string
       contactEmail: string
       createdAt: Date
@@ -1661,6 +1695,7 @@ export namespace Prisma {
   export interface Prisma__challengeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     category<T extends challengeCategoryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, challengeCategoryDefaultArgs<ExtArgs>>): Prisma__challengeCategoryClient<$Result.GetResult<Prisma.$challengeCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
+    skills<T extends skillDefaultArgs<ExtArgs> = {}>(args?: Subset<T, skillDefaultArgs<ExtArgs>>): Prisma__skillClient<$Result.GetResult<Prisma.$skillPayload<ExtArgs>, T, "findUniqueOrThrow", ClientOptions> | Null, Null, ExtArgs, ClientOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1699,7 +1734,7 @@ export namespace Prisma {
     readonly moneyPrize: FieldRef<"challenge", 'String'>
     readonly seniority: FieldRef<"challenge", 'String[]'>
     readonly categoryId: FieldRef<"challenge", 'String'>
-    readonly skills: FieldRef<"challenge", 'String[]'>
+    readonly skillId: FieldRef<"challenge", 'String[]'>
     readonly submissionLink: FieldRef<"challenge", 'String'>
     readonly contactEmail: FieldRef<"challenge", 'String'>
     readonly createdAt: FieldRef<"challenge", 'DateTime'>
@@ -3233,6 +3268,8 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     createdAt?: boolean
+    challenges?: boolean | skill$challengesArgs<ExtArgs>
+    _count?: boolean | SkillCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["skill"]>
 
 
@@ -3244,10 +3281,16 @@ export namespace Prisma {
   }
 
   export type skillOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "createdAt", ExtArgs["result"]["skill"]>
+  export type skillInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    challenges?: boolean | skill$challengesArgs<ExtArgs>
+    _count?: boolean | SkillCountOutputTypeDefaultArgs<ExtArgs>
+  }
 
   export type $skillPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "skill"
-    objects: {}
+    objects: {
+      challenges: Prisma.$challengePayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
@@ -3615,6 +3658,7 @@ export namespace Prisma {
    */
   export interface Prisma__skillClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    challenges<T extends skill$challengesArgs<ExtArgs> = {}>(args?: Subset<T, skill$challengesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$challengePayload<ExtArgs>, T, "findMany", ClientOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3664,6 +3708,10 @@ export namespace Prisma {
      */
     omit?: skillOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: skillInclude<ExtArgs> | null
+    /**
      * Filter, which skill to fetch.
      */
     where: skillWhereUniqueInput
@@ -3682,6 +3730,10 @@ export namespace Prisma {
      */
     omit?: skillOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: skillInclude<ExtArgs> | null
+    /**
      * Filter, which skill to fetch.
      */
     where: skillWhereUniqueInput
@@ -3699,6 +3751,10 @@ export namespace Prisma {
      * Omit specific fields from the skill
      */
     omit?: skillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: skillInclude<ExtArgs> | null
     /**
      * Filter, which skill to fetch.
      */
@@ -3748,6 +3804,10 @@ export namespace Prisma {
      */
     omit?: skillOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: skillInclude<ExtArgs> | null
+    /**
      * Filter, which skill to fetch.
      */
     where?: skillWhereInput
@@ -3796,6 +3856,10 @@ export namespace Prisma {
      */
     omit?: skillOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: skillInclude<ExtArgs> | null
+    /**
      * Filter, which skills to fetch.
      */
     where?: skillWhereInput
@@ -3839,6 +3903,10 @@ export namespace Prisma {
      */
     omit?: skillOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: skillInclude<ExtArgs> | null
+    /**
      * The data needed to create a skill.
      */
     data: XOR<skillCreateInput, skillUncheckedCreateInput>
@@ -3866,6 +3934,10 @@ export namespace Prisma {
      * Omit specific fields from the skill
      */
     omit?: skillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: skillInclude<ExtArgs> | null
     /**
      * The data needed to update a skill.
      */
@@ -3907,6 +3979,10 @@ export namespace Prisma {
      */
     omit?: skillOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: skillInclude<ExtArgs> | null
+    /**
      * The filter to search for the skill to update in case it exists.
      */
     where: skillWhereUniqueInput
@@ -3932,6 +4008,10 @@ export namespace Prisma {
      * Omit specific fields from the skill
      */
     omit?: skillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: skillInclude<ExtArgs> | null
     /**
      * Filter which skill to delete.
      */
@@ -3981,6 +4061,30 @@ export namespace Prisma {
   }
 
   /**
+   * skill.challenges
+   */
+  export type skill$challengesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the challenge
+     */
+    select?: challengeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the challenge
+     */
+    omit?: challengeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: challengeInclude<ExtArgs> | null
+    where?: challengeWhereInput
+    orderBy?: challengeOrderByWithRelationInput | challengeOrderByWithRelationInput[]
+    cursor?: challengeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ChallengeScalarFieldEnum | ChallengeScalarFieldEnum[]
+  }
+
+  /**
    * skill without action
    */
   export type skillDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3992,6 +4096,10 @@ export namespace Prisma {
      * Omit specific fields from the skill
      */
     omit?: skillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: skillInclude<ExtArgs> | null
   }
 
 
@@ -4009,7 +4117,7 @@ export namespace Prisma {
     moneyPrize: 'moneyPrize',
     seniority: 'seniority',
     categoryId: 'categoryId',
-    skills: 'skills',
+    skillId: 'skillId',
     submissionLink: 'submissionLink',
     contactEmail: 'contactEmail',
     createdAt: 'createdAt'
@@ -4116,11 +4224,12 @@ export namespace Prisma {
     moneyPrize?: StringFilter<"challenge"> | string
     seniority?: StringNullableListFilter<"challenge">
     categoryId?: StringFilter<"challenge"> | string
-    skills?: StringNullableListFilter<"challenge">
+    skillId?: StringNullableListFilter<"challenge">
     submissionLink?: StringFilter<"challenge"> | string
     contactEmail?: StringFilter<"challenge"> | string
     createdAt?: DateTimeFilter<"challenge"> | Date | string
     category?: XOR<ChallengeCategoryScalarRelationFilter, challengeCategoryWhereInput>
+    skills?: XOR<SkillScalarRelationFilter, skillWhereInput>
   }
 
   export type challengeOrderByWithRelationInput = {
@@ -4133,11 +4242,12 @@ export namespace Prisma {
     moneyPrize?: SortOrder
     seniority?: SortOrder
     categoryId?: SortOrder
-    skills?: SortOrder
+    skillId?: SortOrder
     submissionLink?: SortOrder
     contactEmail?: SortOrder
     createdAt?: SortOrder
     category?: challengeCategoryOrderByWithRelationInput
+    skills?: skillOrderByWithRelationInput
   }
 
   export type challengeWhereUniqueInput = Prisma.AtLeast<{
@@ -4153,11 +4263,12 @@ export namespace Prisma {
     moneyPrize?: StringFilter<"challenge"> | string
     seniority?: StringNullableListFilter<"challenge">
     categoryId?: StringFilter<"challenge"> | string
-    skills?: StringNullableListFilter<"challenge">
+    skillId?: StringNullableListFilter<"challenge">
     submissionLink?: StringFilter<"challenge"> | string
     contactEmail?: StringFilter<"challenge"> | string
     createdAt?: DateTimeFilter<"challenge"> | Date | string
     category?: XOR<ChallengeCategoryScalarRelationFilter, challengeCategoryWhereInput>
+    skills?: XOR<SkillScalarRelationFilter, skillWhereInput>
   }, "id" | "challengeTitle">
 
   export type challengeOrderByWithAggregationInput = {
@@ -4170,7 +4281,7 @@ export namespace Prisma {
     moneyPrize?: SortOrder
     seniority?: SortOrder
     categoryId?: SortOrder
-    skills?: SortOrder
+    skillId?: SortOrder
     submissionLink?: SortOrder
     contactEmail?: SortOrder
     createdAt?: SortOrder
@@ -4192,7 +4303,7 @@ export namespace Prisma {
     moneyPrize?: StringWithAggregatesFilter<"challenge"> | string
     seniority?: StringNullableListFilter<"challenge">
     categoryId?: StringWithAggregatesFilter<"challenge"> | string
-    skills?: StringNullableListFilter<"challenge">
+    skillId?: StringNullableListFilter<"challenge">
     submissionLink?: StringWithAggregatesFilter<"challenge"> | string
     contactEmail?: StringWithAggregatesFilter<"challenge"> | string
     createdAt?: DateTimeWithAggregatesFilter<"challenge"> | Date | string
@@ -4255,12 +4366,14 @@ export namespace Prisma {
     id?: StringFilter<"skill"> | string
     name?: StringFilter<"skill"> | string
     createdAt?: DateTimeFilter<"skill"> | Date | string
+    challenges?: ChallengeListRelationFilter
   }
 
   export type skillOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
     createdAt?: SortOrder
+    challenges?: challengeOrderByRelationAggregateInput
   }
 
   export type skillWhereUniqueInput = Prisma.AtLeast<{
@@ -4270,6 +4383,7 @@ export namespace Prisma {
     OR?: skillWhereInput[]
     NOT?: skillWhereInput | skillWhereInput[]
     createdAt?: DateTimeFilter<"skill"> | Date | string
+    challenges?: ChallengeListRelationFilter
   }, "id" | "name">
 
   export type skillOrderByWithAggregationInput = {
@@ -4299,11 +4413,11 @@ export namespace Prisma {
     deadline: Date | string
     moneyPrize: string
     seniority?: challengeCreateseniorityInput | string[]
-    skills?: challengeCreateskillsInput | string[]
     submissionLink: string
     contactEmail: string
     createdAt?: Date | string
     category: challengeCategoryCreateNestedOneWithoutChallengesInput
+    skills: skillCreateNestedOneWithoutChallengesInput
   }
 
   export type challengeUncheckedCreateInput = {
@@ -4316,7 +4430,7 @@ export namespace Prisma {
     moneyPrize: string
     seniority?: challengeCreateseniorityInput | string[]
     categoryId: string
-    skills?: challengeCreateskillsInput | string[]
+    skillId?: challengeCreateskillIdInput | string[]
     submissionLink: string
     contactEmail: string
     createdAt?: Date | string
@@ -4330,11 +4444,11 @@ export namespace Prisma {
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     moneyPrize?: StringFieldUpdateOperationsInput | string
     seniority?: challengeUpdateseniorityInput | string[]
-    skills?: challengeUpdateskillsInput | string[]
     submissionLink?: StringFieldUpdateOperationsInput | string
     contactEmail?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: challengeCategoryUpdateOneRequiredWithoutChallengesNestedInput
+    skills?: skillUpdateOneRequiredWithoutChallengesNestedInput
   }
 
   export type challengeUncheckedUpdateInput = {
@@ -4346,7 +4460,7 @@ export namespace Prisma {
     moneyPrize?: StringFieldUpdateOperationsInput | string
     seniority?: challengeUpdateseniorityInput | string[]
     categoryId?: StringFieldUpdateOperationsInput | string
-    skills?: challengeUpdateskillsInput | string[]
+    skillId?: challengeUpdateskillIdInput | string[]
     submissionLink?: StringFieldUpdateOperationsInput | string
     contactEmail?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4362,7 +4476,7 @@ export namespace Prisma {
     moneyPrize: string
     seniority?: challengeCreateseniorityInput | string[]
     categoryId: string
-    skills?: challengeCreateskillsInput | string[]
+    skillId?: challengeCreateskillIdInput | string[]
     submissionLink: string
     contactEmail: string
     createdAt?: Date | string
@@ -4376,7 +4490,6 @@ export namespace Prisma {
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     moneyPrize?: StringFieldUpdateOperationsInput | string
     seniority?: challengeUpdateseniorityInput | string[]
-    skills?: challengeUpdateskillsInput | string[]
     submissionLink?: StringFieldUpdateOperationsInput | string
     contactEmail?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4391,7 +4504,7 @@ export namespace Prisma {
     moneyPrize?: StringFieldUpdateOperationsInput | string
     seniority?: challengeUpdateseniorityInput | string[]
     categoryId?: StringFieldUpdateOperationsInput | string
-    skills?: challengeUpdateskillsInput | string[]
+    skillId?: challengeUpdateskillIdInput | string[]
     submissionLink?: StringFieldUpdateOperationsInput | string
     contactEmail?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4450,22 +4563,26 @@ export namespace Prisma {
     id?: string
     name: string
     createdAt?: Date | string
+    challenges?: challengeCreateNestedManyWithoutSkillsInput
   }
 
   export type skillUncheckedCreateInput = {
     id?: string
     name: string
     createdAt?: Date | string
+    challenges?: challengeUncheckedCreateNestedManyWithoutSkillsInput
   }
 
   export type skillUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    challenges?: challengeUpdateManyWithoutSkillsNestedInput
   }
 
   export type skillUncheckedUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    challenges?: challengeUncheckedUpdateManyWithoutSkillsNestedInput
   }
 
   export type skillCreateManyInput = {
@@ -4523,6 +4640,11 @@ export namespace Prisma {
     isNot?: challengeCategoryWhereInput
   }
 
+  export type SkillScalarRelationFilter = {
+    is?: skillWhereInput
+    isNot?: skillWhereInput
+  }
+
   export type challengeCountOrderByAggregateInput = {
     id?: SortOrder
     challengeTitle?: SortOrder
@@ -4533,7 +4655,7 @@ export namespace Prisma {
     moneyPrize?: SortOrder
     seniority?: SortOrder
     categoryId?: SortOrder
-    skills?: SortOrder
+    skillId?: SortOrder
     submissionLink?: SortOrder
     contactEmail?: SortOrder
     createdAt?: SortOrder
@@ -4652,14 +4774,20 @@ export namespace Prisma {
     set: string[]
   }
 
-  export type challengeCreateskillsInput = {
-    set: string[]
-  }
-
   export type challengeCategoryCreateNestedOneWithoutChallengesInput = {
     create?: XOR<challengeCategoryCreateWithoutChallengesInput, challengeCategoryUncheckedCreateWithoutChallengesInput>
     connectOrCreate?: challengeCategoryCreateOrConnectWithoutChallengesInput
     connect?: challengeCategoryWhereUniqueInput
+  }
+
+  export type skillCreateNestedOneWithoutChallengesInput = {
+    create?: XOR<skillCreateWithoutChallengesInput, skillUncheckedCreateWithoutChallengesInput>
+    connectOrCreate?: skillCreateOrConnectWithoutChallengesInput
+    connect?: skillWhereUniqueInput
+  }
+
+  export type challengeCreateskillIdInput = {
+    set: string[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -4675,17 +4803,25 @@ export namespace Prisma {
     push?: string | string[]
   }
 
-  export type challengeUpdateskillsInput = {
-    set?: string[]
-    push?: string | string[]
-  }
-
   export type challengeCategoryUpdateOneRequiredWithoutChallengesNestedInput = {
     create?: XOR<challengeCategoryCreateWithoutChallengesInput, challengeCategoryUncheckedCreateWithoutChallengesInput>
     connectOrCreate?: challengeCategoryCreateOrConnectWithoutChallengesInput
     upsert?: challengeCategoryUpsertWithoutChallengesInput
     connect?: challengeCategoryWhereUniqueInput
     update?: XOR<XOR<challengeCategoryUpdateToOneWithWhereWithoutChallengesInput, challengeCategoryUpdateWithoutChallengesInput>, challengeCategoryUncheckedUpdateWithoutChallengesInput>
+  }
+
+  export type skillUpdateOneRequiredWithoutChallengesNestedInput = {
+    create?: XOR<skillCreateWithoutChallengesInput, skillUncheckedCreateWithoutChallengesInput>
+    connectOrCreate?: skillCreateOrConnectWithoutChallengesInput
+    upsert?: skillUpsertWithoutChallengesInput
+    connect?: skillWhereUniqueInput
+    update?: XOR<XOR<skillUpdateToOneWithWhereWithoutChallengesInput, skillUpdateWithoutChallengesInput>, skillUncheckedUpdateWithoutChallengesInput>
+  }
+
+  export type challengeUpdateskillIdInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type challengeCreateNestedManyWithoutCategoryInput = {
@@ -4727,6 +4863,48 @@ export namespace Prisma {
     connect?: challengeWhereUniqueInput | challengeWhereUniqueInput[]
     update?: challengeUpdateWithWhereUniqueWithoutCategoryInput | challengeUpdateWithWhereUniqueWithoutCategoryInput[]
     updateMany?: challengeUpdateManyWithWhereWithoutCategoryInput | challengeUpdateManyWithWhereWithoutCategoryInput[]
+    deleteMany?: challengeScalarWhereInput | challengeScalarWhereInput[]
+  }
+
+  export type challengeCreateNestedManyWithoutSkillsInput = {
+    create?: XOR<challengeCreateWithoutSkillsInput, challengeUncheckedCreateWithoutSkillsInput> | challengeCreateWithoutSkillsInput[] | challengeUncheckedCreateWithoutSkillsInput[]
+    connectOrCreate?: challengeCreateOrConnectWithoutSkillsInput | challengeCreateOrConnectWithoutSkillsInput[]
+    createMany?: challengeCreateManySkillsInputEnvelope
+    connect?: challengeWhereUniqueInput | challengeWhereUniqueInput[]
+  }
+
+  export type challengeUncheckedCreateNestedManyWithoutSkillsInput = {
+    create?: XOR<challengeCreateWithoutSkillsInput, challengeUncheckedCreateWithoutSkillsInput> | challengeCreateWithoutSkillsInput[] | challengeUncheckedCreateWithoutSkillsInput[]
+    connectOrCreate?: challengeCreateOrConnectWithoutSkillsInput | challengeCreateOrConnectWithoutSkillsInput[]
+    createMany?: challengeCreateManySkillsInputEnvelope
+    connect?: challengeWhereUniqueInput | challengeWhereUniqueInput[]
+  }
+
+  export type challengeUpdateManyWithoutSkillsNestedInput = {
+    create?: XOR<challengeCreateWithoutSkillsInput, challengeUncheckedCreateWithoutSkillsInput> | challengeCreateWithoutSkillsInput[] | challengeUncheckedCreateWithoutSkillsInput[]
+    connectOrCreate?: challengeCreateOrConnectWithoutSkillsInput | challengeCreateOrConnectWithoutSkillsInput[]
+    upsert?: challengeUpsertWithWhereUniqueWithoutSkillsInput | challengeUpsertWithWhereUniqueWithoutSkillsInput[]
+    createMany?: challengeCreateManySkillsInputEnvelope
+    set?: challengeWhereUniqueInput | challengeWhereUniqueInput[]
+    disconnect?: challengeWhereUniqueInput | challengeWhereUniqueInput[]
+    delete?: challengeWhereUniqueInput | challengeWhereUniqueInput[]
+    connect?: challengeWhereUniqueInput | challengeWhereUniqueInput[]
+    update?: challengeUpdateWithWhereUniqueWithoutSkillsInput | challengeUpdateWithWhereUniqueWithoutSkillsInput[]
+    updateMany?: challengeUpdateManyWithWhereWithoutSkillsInput | challengeUpdateManyWithWhereWithoutSkillsInput[]
+    deleteMany?: challengeScalarWhereInput | challengeScalarWhereInput[]
+  }
+
+  export type challengeUncheckedUpdateManyWithoutSkillsNestedInput = {
+    create?: XOR<challengeCreateWithoutSkillsInput, challengeUncheckedCreateWithoutSkillsInput> | challengeCreateWithoutSkillsInput[] | challengeUncheckedCreateWithoutSkillsInput[]
+    connectOrCreate?: challengeCreateOrConnectWithoutSkillsInput | challengeCreateOrConnectWithoutSkillsInput[]
+    upsert?: challengeUpsertWithWhereUniqueWithoutSkillsInput | challengeUpsertWithWhereUniqueWithoutSkillsInput[]
+    createMany?: challengeCreateManySkillsInputEnvelope
+    set?: challengeWhereUniqueInput | challengeWhereUniqueInput[]
+    disconnect?: challengeWhereUniqueInput | challengeWhereUniqueInput[]
+    delete?: challengeWhereUniqueInput | challengeWhereUniqueInput[]
+    connect?: challengeWhereUniqueInput | challengeWhereUniqueInput[]
+    update?: challengeUpdateWithWhereUniqueWithoutSkillsInput | challengeUpdateWithWhereUniqueWithoutSkillsInput[]
+    updateMany?: challengeUpdateManyWithWhereWithoutSkillsInput | challengeUpdateManyWithWhereWithoutSkillsInput[]
     deleteMany?: challengeScalarWhereInput | challengeScalarWhereInput[]
   }
 
@@ -4816,6 +4994,23 @@ export namespace Prisma {
     create: XOR<challengeCategoryCreateWithoutChallengesInput, challengeCategoryUncheckedCreateWithoutChallengesInput>
   }
 
+  export type skillCreateWithoutChallengesInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+  }
+
+  export type skillUncheckedCreateWithoutChallengesInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+  }
+
+  export type skillCreateOrConnectWithoutChallengesInput = {
+    where: skillWhereUniqueInput
+    create: XOR<skillCreateWithoutChallengesInput, skillUncheckedCreateWithoutChallengesInput>
+  }
+
   export type challengeCategoryUpsertWithoutChallengesInput = {
     update: XOR<challengeCategoryUpdateWithoutChallengesInput, challengeCategoryUncheckedUpdateWithoutChallengesInput>
     create: XOR<challengeCategoryCreateWithoutChallengesInput, challengeCategoryUncheckedCreateWithoutChallengesInput>
@@ -4839,6 +5034,27 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type skillUpsertWithoutChallengesInput = {
+    update: XOR<skillUpdateWithoutChallengesInput, skillUncheckedUpdateWithoutChallengesInput>
+    create: XOR<skillCreateWithoutChallengesInput, skillUncheckedCreateWithoutChallengesInput>
+    where?: skillWhereInput
+  }
+
+  export type skillUpdateToOneWithWhereWithoutChallengesInput = {
+    where?: skillWhereInput
+    data: XOR<skillUpdateWithoutChallengesInput, skillUncheckedUpdateWithoutChallengesInput>
+  }
+
+  export type skillUpdateWithoutChallengesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type skillUncheckedUpdateWithoutChallengesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type challengeCreateWithoutCategoryInput = {
     id?: string
     challengeTitle: string
@@ -4848,10 +5064,10 @@ export namespace Prisma {
     deadline: Date | string
     moneyPrize: string
     seniority?: challengeCreateseniorityInput | string[]
-    skills?: challengeCreateskillsInput | string[]
     submissionLink: string
     contactEmail: string
     createdAt?: Date | string
+    skills: skillCreateNestedOneWithoutChallengesInput
   }
 
   export type challengeUncheckedCreateWithoutCategoryInput = {
@@ -4863,7 +5079,7 @@ export namespace Prisma {
     deadline: Date | string
     moneyPrize: string
     seniority?: challengeCreateseniorityInput | string[]
-    skills?: challengeCreateskillsInput | string[]
+    skillId?: challengeCreateskillIdInput | string[]
     submissionLink: string
     contactEmail: string
     createdAt?: Date | string
@@ -4907,10 +5123,65 @@ export namespace Prisma {
     moneyPrize?: StringFilter<"challenge"> | string
     seniority?: StringNullableListFilter<"challenge">
     categoryId?: StringFilter<"challenge"> | string
-    skills?: StringNullableListFilter<"challenge">
+    skillId?: StringNullableListFilter<"challenge">
     submissionLink?: StringFilter<"challenge"> | string
     contactEmail?: StringFilter<"challenge"> | string
     createdAt?: DateTimeFilter<"challenge"> | Date | string
+  }
+
+  export type challengeCreateWithoutSkillsInput = {
+    id?: string
+    challengeTitle: string
+    description: string
+    projectBrief: string
+    startDate: Date | string
+    deadline: Date | string
+    moneyPrize: string
+    seniority?: challengeCreateseniorityInput | string[]
+    submissionLink: string
+    contactEmail: string
+    createdAt?: Date | string
+    category: challengeCategoryCreateNestedOneWithoutChallengesInput
+  }
+
+  export type challengeUncheckedCreateWithoutSkillsInput = {
+    id?: string
+    challengeTitle: string
+    description: string
+    projectBrief: string
+    startDate: Date | string
+    deadline: Date | string
+    moneyPrize: string
+    seniority?: challengeCreateseniorityInput | string[]
+    categoryId: string
+    submissionLink: string
+    contactEmail: string
+    createdAt?: Date | string
+  }
+
+  export type challengeCreateOrConnectWithoutSkillsInput = {
+    where: challengeWhereUniqueInput
+    create: XOR<challengeCreateWithoutSkillsInput, challengeUncheckedCreateWithoutSkillsInput>
+  }
+
+  export type challengeCreateManySkillsInputEnvelope = {
+    data: challengeCreateManySkillsInput | challengeCreateManySkillsInput[]
+  }
+
+  export type challengeUpsertWithWhereUniqueWithoutSkillsInput = {
+    where: challengeWhereUniqueInput
+    update: XOR<challengeUpdateWithoutSkillsInput, challengeUncheckedUpdateWithoutSkillsInput>
+    create: XOR<challengeCreateWithoutSkillsInput, challengeUncheckedCreateWithoutSkillsInput>
+  }
+
+  export type challengeUpdateWithWhereUniqueWithoutSkillsInput = {
+    where: challengeWhereUniqueInput
+    data: XOR<challengeUpdateWithoutSkillsInput, challengeUncheckedUpdateWithoutSkillsInput>
+  }
+
+  export type challengeUpdateManyWithWhereWithoutSkillsInput = {
+    where: challengeScalarWhereInput
+    data: XOR<challengeUpdateManyMutationInput, challengeUncheckedUpdateManyWithoutSkillsInput>
   }
 
   export type challengeCreateManyCategoryInput = {
@@ -4922,7 +5193,7 @@ export namespace Prisma {
     deadline: Date | string
     moneyPrize: string
     seniority?: challengeCreateseniorityInput | string[]
-    skills?: challengeCreateskillsInput | string[]
+    skillId?: challengeCreateskillIdInput | string[]
     submissionLink: string
     contactEmail: string
     createdAt?: Date | string
@@ -4936,10 +5207,10 @@ export namespace Prisma {
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     moneyPrize?: StringFieldUpdateOperationsInput | string
     seniority?: challengeUpdateseniorityInput | string[]
-    skills?: challengeUpdateskillsInput | string[]
     submissionLink?: StringFieldUpdateOperationsInput | string
     contactEmail?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    skills?: skillUpdateOneRequiredWithoutChallengesNestedInput
   }
 
   export type challengeUncheckedUpdateWithoutCategoryInput = {
@@ -4950,7 +5221,7 @@ export namespace Prisma {
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     moneyPrize?: StringFieldUpdateOperationsInput | string
     seniority?: challengeUpdateseniorityInput | string[]
-    skills?: challengeUpdateskillsInput | string[]
+    skillId?: challengeUpdateskillIdInput | string[]
     submissionLink?: StringFieldUpdateOperationsInput | string
     contactEmail?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4964,7 +5235,64 @@ export namespace Prisma {
     deadline?: DateTimeFieldUpdateOperationsInput | Date | string
     moneyPrize?: StringFieldUpdateOperationsInput | string
     seniority?: challengeUpdateseniorityInput | string[]
-    skills?: challengeUpdateskillsInput | string[]
+    skillId?: challengeUpdateskillIdInput | string[]
+    submissionLink?: StringFieldUpdateOperationsInput | string
+    contactEmail?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type challengeCreateManySkillsInput = {
+    id?: string
+    challengeTitle: string
+    description: string
+    projectBrief: string
+    startDate: Date | string
+    deadline: Date | string
+    moneyPrize: string
+    seniority?: challengeCreateseniorityInput | string[]
+    categoryId: string
+    submissionLink: string
+    contactEmail: string
+    createdAt?: Date | string
+  }
+
+  export type challengeUpdateWithoutSkillsInput = {
+    challengeTitle?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    projectBrief?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    moneyPrize?: StringFieldUpdateOperationsInput | string
+    seniority?: challengeUpdateseniorityInput | string[]
+    submissionLink?: StringFieldUpdateOperationsInput | string
+    contactEmail?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    category?: challengeCategoryUpdateOneRequiredWithoutChallengesNestedInput
+  }
+
+  export type challengeUncheckedUpdateWithoutSkillsInput = {
+    challengeTitle?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    projectBrief?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    moneyPrize?: StringFieldUpdateOperationsInput | string
+    seniority?: challengeUpdateseniorityInput | string[]
+    categoryId?: StringFieldUpdateOperationsInput | string
+    submissionLink?: StringFieldUpdateOperationsInput | string
+    contactEmail?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type challengeUncheckedUpdateManyWithoutSkillsInput = {
+    challengeTitle?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    projectBrief?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    deadline?: DateTimeFieldUpdateOperationsInput | Date | string
+    moneyPrize?: StringFieldUpdateOperationsInput | string
+    seniority?: challengeUpdateseniorityInput | string[]
+    categoryId?: StringFieldUpdateOperationsInput | string
     submissionLink?: StringFieldUpdateOperationsInput | string
     contactEmail?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
