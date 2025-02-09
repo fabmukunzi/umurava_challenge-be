@@ -190,12 +190,12 @@ class ChallengeService {
     const allChallenges = await prisma.challenge.findMany({
       where,
       include: { category: true },
+      orderBy: { createdAt: "desc" },
     });
 
     type ChallengeStatus = "Open" | "Ongoing" | "Completed";
 
-    // eslint-disable-next-line prefer-const
-    let statusCounts: Record<ChallengeStatus, number> = {
+    const statusCounts: Record<ChallengeStatus, number> = {
       Open: 0,
       Ongoing: 0,
       Completed: 0,
