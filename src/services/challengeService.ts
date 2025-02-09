@@ -223,6 +223,31 @@ class ChallengeService {
     };
   }
 
+  static async getChallengesByStatus(status: "Open" | "Ongoing" | "Completed") {
+    const now = new Date();
+
+    const challenges = await prisma.challenge.findMany({
+      include: { category: true },
+    });
+
+    const updatedChallenges = challenges.map((challenge) => {
+      const { createdAt, startDate, deadline } = challenge;
+      let challengeStatus: "Open" | "Ongoing" | "Completed";
+
+      if (new Date(createdAt) <= now && now < new Date(startDate)) {
+        challengeStatus = "Open";
+      } else if (new Date(startDate) <= now && now < new Date(deadline)) {
+        challengeStatus = "Ongoing";
+      } else {
+        challengeStatus = "Completed";
+      }
+
+      return { ...challenge, status: challengeStatus };
+    });
+
+    return updatedChallenges.filter((challenge) => challenge.status === status);
+  }
+
   static async getSingleChallenge(id: string): Promise<challenge | null> {
     return prisma.challenge.findUnique({
       where: { id },

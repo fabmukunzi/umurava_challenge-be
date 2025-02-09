@@ -99,6 +99,31 @@ class ChallengeController {
     }
   }
 
+  static async getChallengesByStatus(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    try {
+      const { status } = req.params;
+
+      if (!status || !["Open", "Ongoing", "Completed"].includes(status)) {
+        res.status(400).json({ message: "Invalid status provided" });
+        return;
+      }
+
+      const challenges = await ChallengeService.getChallengesByStatus(
+        status as "Open" | "Ongoing" | "Completed",
+      );
+
+      res.status(200).json({ challenges });
+    } catch (error) {
+      res.status(500).json({
+        message: "Server error",
+        error: error instanceof Error ? error.message : error,
+      });
+    }
+  }
+
   static async getSingleChallenge(req: Request, res: Response): Promise<void> {
     try {
       const { challengeid } = req.params;
