@@ -16,7 +16,6 @@ class ValidationError extends Error {
 }
 
 class ChallengeService {
-  // Helper function to validate dates
   private static validateDates(startDate: Date, deadline: Date): void {
     if (isNaN(startDate.getTime()) || isNaN(deadline.getTime())) {
       throw new ValidationError("Invalid date format");
@@ -26,8 +25,6 @@ class ChallengeService {
       throw new ValidationError("Deadline must be after the start date");
     }
   }
-
-  // Helper function to validate skills
   private static async validateSkills(skills: string[]): Promise<void> {
     const existingSkills = await prisma.skill.findMany({
       where: { name: { in: skills } },
@@ -42,7 +39,6 @@ class ChallengeService {
     }
   }
 
-  // Helper function to validate seniority
   private static validateSeniority(seniority: string[]): void {
     const validSeniorityLevels = ["Junior", "Intermediate", "Senior"];
     const invalidSeniority = seniority.filter(
@@ -56,11 +52,9 @@ class ChallengeService {
     }
   }
 
-  // Create a new challenge
   static async createChallenge(
     data: Prisma.challengeCreateInput,
   ): Promise<challenge> {
-    // Check for existing challenge title
     const existingChallenge = await prisma.challenge.findFirst({
       where: { challengeTitle: data.challengeTitle },
     });
@@ -69,7 +63,6 @@ class ChallengeService {
       throw new ValidationError("Challenge title already exists");
     }
 
-    // Validate category exists
     const categoryExists = await prisma.challengeCategory.findFirst({
       where: { id: data.category as string },
     });
@@ -78,22 +71,18 @@ class ChallengeService {
       throw new NotFoundError("Invalid category ID");
     }
 
-    // Validate dates
     const startDate = new Date(data.startDate as string);
     const deadlineDate = new Date(data.deadline as string);
     this.validateDates(startDate, deadlineDate);
 
-    // Validate skills
     if (data.skills && Array.isArray(data.skills)) {
       await this.validateSkills(data.skills as string[]);
     }
 
-    // Validate seniority
     if (data.seniority && Array.isArray(data.seniority)) {
       this.validateSeniority(data.seniority as string[]);
     }
 
-    // Create the challenge
     return prisma.challenge.create({
       data: {
         ...data,
@@ -107,12 +96,10 @@ class ChallengeService {
     });
   }
 
-  // Update an existing challenge
   static async updateChallenge(
     id: string,
     data: Prisma.challengeUpdateInput,
   ): Promise<challenge> {
-    // Check if challenge exists
     const existingChallenge = await prisma.challenge.findUnique({
       where: { id },
     });
@@ -121,7 +108,6 @@ class ChallengeService {
       throw new NotFoundError("Challenge not found");
     }
 
-    // If updating title, check for uniqueness
     if (data.challengeTitle) {
       const titleExists = await prisma.challenge.findFirst({
         where: {
@@ -135,7 +121,6 @@ class ChallengeService {
       }
     }
 
-    // If updating category, validate it exists
     if (data.category) {
       const categoryExists = await prisma.challengeCategory.findUnique({
         where: { id: data.category as string },
@@ -146,7 +131,6 @@ class ChallengeService {
       }
     }
 
-    // Validate dates if updated
     if (data.deadline || data.startDate) {
       const startDate = new Date(
         (data.startDate as string) || existingChallenge.startDate,
@@ -158,12 +142,10 @@ class ChallengeService {
       this.validateDates(startDate, deadlineDate);
     }
 
-    // Validate skills if updated
     if (data.skills && Array.isArray(data.skills)) {
       await this.validateSkills(data.skills as string[]);
     }
 
-    // Validate seniority if updated
     if (data.seniority && Array.isArray(data.seniority)) {
       this.validateSeniority(data.seniority as string[]);
     }
@@ -196,26 +178,17 @@ class ChallengeService {
     const skip = (page - 1) * limit;
     const now = new Date();
 
-    // Build filter query
     const where: Prisma.challengeWhereInput = {};
     if (categoryId) where.categoryId = categoryId;
     if (seniority && seniority.length > 0) {
       where.seniority = { hasEvery: seniority };
     }
 
-    // Fetch challenges and count
-    const [challenges, total] = await Promise.all([
-      prisma.challenge.findMany({
-        skip,
-        take: limit,
-        where,
-        orderBy: { createdAt: "desc" },
-        include: { category: true },
-      }),
-      prisma.challenge.count({ where }),
-    ]);
+    const allChallenges = await prisma.challenge.findMany({
+      where,
+      include: { category: true },
+    });
 
-    // Define possible statuses
     type ChallengeStatus = "Open" | "Ongoing" | "Completed";
 
     // eslint-disable-next-line prefer-const
@@ -225,8 +198,7 @@ class ChallengeService {
       Completed: 0,
     };
 
-    // Assign status to each challenge
-    const updatedChallenges = challenges.map((challenge) => {
+    const challengesWithStatus = allChallenges.map((challenge) => {
       const { createdAt, startDate, deadline } = challenge;
       let status: ChallengeStatus;
 
@@ -238,14 +210,44 @@ class ChallengeService {
         status = "Completed";
       }
 
-      statusCounts[status] += 1; // Increment respective status count
+      statusCounts[status] += 1;
       return { ...challenge, status };
     });
 
-    return { challenges: updatedChallenges, total, statusCounts };
+    const paginatedChallenges = challengesWithStatus.slice(skip, skip + limit);
+
+    return {
+      challenges: paginatedChallenges,
+      total: allChallenges.length,
+      statusCounts,
+    };
   }
 
-  // Get a single challenge by ID
+  static async getChallengesByStatus(status: "Open" | "Ongoing" | "Completed") {
+    const now = new Date();
+
+    const challenges = await prisma.challenge.findMany({
+      include: { category: true },
+    });
+
+    const updatedChallenges = challenges.map((challenge) => {
+      const { createdAt, startDate, deadline } = challenge;
+      let challengeStatus: "Open" | "Ongoing" | "Completed";
+
+      if (new Date(createdAt) <= now && now < new Date(startDate)) {
+        challengeStatus = "Open";
+      } else if (new Date(startDate) <= now && now < new Date(deadline)) {
+        challengeStatus = "Ongoing";
+      } else {
+        challengeStatus = "Completed";
+      }
+
+      return { ...challenge, status: challengeStatus };
+    });
+
+    return updatedChallenges.filter((challenge) => challenge.status === status);
+  }
+
   static async getSingleChallenge(id: string): Promise<challenge | null> {
     return prisma.challenge.findUnique({
       where: { id },
@@ -255,7 +257,6 @@ class ChallengeService {
     });
   }
 
-  // Delete a challenge by ID
   static async deleteChallenge(id: string): Promise<void> {
     const challenge = await prisma.challenge.findUnique({
       where: { id },

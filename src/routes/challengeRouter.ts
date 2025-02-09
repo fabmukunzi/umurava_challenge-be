@@ -7,6 +7,7 @@ challengeRouter.post("/", ChallengeController.createChallenge);
 challengeRouter.patch("/:challengeid", ChallengeController.updateChallenge);
 challengeRouter.delete("/:challengeid", ChallengeController.deleteChallenge);
 challengeRouter.get("/", ChallengeController.getAllChallenges);
+challengeRouter.get("/:status", ChallengeController.getChallengesByStatus);
 challengeRouter.get("/:challengeid", ChallengeController.getSingleChallenge);
 // challengeRouter.get("/search", ChallengeController.searchChallenges);
 

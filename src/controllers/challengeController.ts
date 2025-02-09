@@ -59,11 +59,9 @@ class ChallengeController {
     try {
       const { page = "1", limit = "12", categoryId, seniority } = req.query;
 
-      // Convert query parameters
       const parsedPage = parseInt(page as string, 10);
       const parsedLimit = parseInt(limit as string, 10);
 
-      // Ensure pagination values are valid
       if (isNaN(parsedPage) || parsedPage < 1) {
         res.status(400).json({ message: "Invalid page number" });
         return;
@@ -73,7 +71,6 @@ class ChallengeController {
         return;
       }
 
-      // Convert seniority query parameter to an array if it's a string
       const seniorityArray =
         typeof seniority === "string" ? [seniority] : seniority;
 
@@ -99,6 +96,31 @@ class ChallengeController {
       } else {
         res.status(500).json({ message: "Unknown error occurred" });
       }
+    }
+  }
+
+  static async getChallengesByStatus(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
+    try {
+      const { status } = req.params;
+
+      if (!status || !["Open", "Ongoing", "Completed"].includes(status)) {
+        res.status(400).json({ message: "Invalid status provided" });
+        return;
+      }
+
+      const challenges = await ChallengeService.getChallengesByStatus(
+        status as "Open" | "Ongoing" | "Completed",
+      );
+
+      res.status(200).json({ challenges });
+    } catch (error) {
+      res.status(500).json({
+        message: "Server error",
+        error: error instanceof Error ? error.message : error,
+      });
     }
   }
 

@@ -2,9 +2,7 @@ import { prisma } from "../config/db";
 import { Prisma, skill } from "@prisma/client";
 
 class SkillService {
-  // Create a new skill
   static async createSkill(data: Prisma.skillCreateInput): Promise<skill> {
-    // Check if the skill already exists
     const existingSkill = await prisma.skill.findUnique({
       where: { name: data.name },
     });
@@ -16,7 +14,6 @@ class SkillService {
     return prisma.skill.create({ data });
   }
 
-  // Get all skills
   static async getAllSkills(
     page: number = 1,
     limit: number = 10,
@@ -41,25 +38,21 @@ class SkillService {
     return { skills, total };
   }
 
-  // Get a single skill by ID
   static async getSkillById(id: string): Promise<skill | null> {
     return prisma.skill.findUnique({
       where: { id },
     });
   }
 
-  // Update a skill by ID
   static async updateSkill(
     id: string,
     data: Prisma.skillUpdateInput,
   ): Promise<skill> {
-    // Check if the skill exists
     const existingSkill = await prisma.skill.findUnique({ where: { id } });
     if (!existingSkill) {
       throw new Error("Skill not found");
     }
 
-    // Check if the new name already exists
     if (data.name) {
       const nameExists = await prisma.skill.findFirst({
         where: { name: data.name as string, id: { not: id } },
@@ -76,9 +69,7 @@ class SkillService {
     });
   }
 
-  // Delete a skill by ID
   static async deleteSkill(id: string): Promise<void> {
-    // Check if the skill exists
     const existingSkill = await prisma.skill.findUnique({ where: { id } });
     if (!existingSkill) {
       throw new Error("Skill not found");

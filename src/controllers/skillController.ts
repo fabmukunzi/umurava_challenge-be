@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import SkillService from "../services/skillService";
 
 class SkillController {
-  // Create a new skill
   static async createSkill(req: Request, res: Response): Promise<void> {
     try {
       const { name } = req.body;
@@ -26,7 +25,6 @@ class SkillController {
     }
   }
 
-  // Get all skills
   static async getAllSkills(req: Request, res: Response): Promise<void> {
     try {
       const { page = 1, limit = 10 } = req.query;
@@ -49,7 +47,6 @@ class SkillController {
     }
   }
 
-  // Get a single skill by ID
   static async getSkillById(req: Request, res: Response): Promise<void> {
     try {
       const { skillid } = req.params;
@@ -75,7 +72,6 @@ class SkillController {
     }
   }
 
-  // Update a skill by ID
   static async updateSkill(req: Request, res: Response): Promise<void> {
     try {
       const { skillid } = req.params;
@@ -101,7 +97,6 @@ class SkillController {
     }
   }
 
-  // Delete a skill by ID
   static async deleteSkill(req: Request, res: Response): Promise<void> {
     try {
       const { skillid } = req.params;
