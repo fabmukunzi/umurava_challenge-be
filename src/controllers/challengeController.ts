@@ -99,31 +99,6 @@ class ChallengeController {
     }
   }
 
-  static async getChallengesByStatus(
-    req: Request,
-    res: Response,
-  ): Promise<void> {
-    try {
-      const { status } = req.params;
-
-      if (!status || !["Open", "Ongoing", "Completed"].includes(status)) {
-        res.status(400).json({ message: "Invalid status provided" });
-        return;
-      }
-
-      const challenges = await ChallengeService.getChallengesByStatus(
-        status as "Open" | "Ongoing" | "Completed",
-      );
-
-      res.status(200).json({ challenges });
-    } catch (error) {
-      res.status(500).json({
-        message: "Server error",
-        error: error instanceof Error ? error.message : error,
-      });
-    }
-  }
-
   static async getSingleChallenge(req: Request, res: Response): Promise<void> {
     try {
       const { challengeid } = req.params;
@@ -163,38 +138,6 @@ class ChallengeController {
       }
     }
   }
-
-  // static async searchChallenges(req: Request, res: Response): Promise<void> {
-  //   try {
-  //     const { q: searchTerm, page = 1, limit = 10 } = req.query;
-  //     if (!searchTerm || typeof searchTerm !== "string") {
-  //       logger.warn("Search term is missing or invalid", { searchTerm });
-  //       res.status(400).json({ message: "Search term is required" });
-  //       return;
-  //     }
-
-  //     const { challenges, total } = await ChallengeService.searchChallenges(
-  //       searchTerm,
-  //       Number(page),
-  //       Number(limit),
-  //     );
-
-  //     logger.info("Searched challenges", { searchTerm, total });
-  //     res.status(200).json({
-  //       challenges: serializeBigInt(challenges),
-  //       total,
-  //       page: Number(page),
-  //       limit: Number(limit),
-  //     });
-  //   } catch (error: unknown) {
-  //     logger.error("Search challenges error", { error });
-  //     if (error instanceof Error) {
-  //       res.status(500).json({ message: error.message || "Server error" });
-  //     } else {
-  //       res.status(500).json({ message: "Unknown error occurred" });
-  //     }
-  //   }
-  // }
 }
 
 export default ChallengeController;

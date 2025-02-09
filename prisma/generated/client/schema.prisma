@@ -23,7 +23,8 @@ model challenge {
   seniority      String[]
   category       challengeCategory @relation(fields: [categoryId], references: [id])
   categoryId     String            @db.ObjectId
-  skills         String[]
+  skills         skill             @relation(fields: [skillId], references: [id])
+  skillId        String[]          @db.ObjectId
   submissionLink String
   contactEmail   String
   createdAt      DateTime          @default(now())
@@ -38,7 +39,8 @@ model challengeCategory {
 }
 
 model skill {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String   @unique
-  createdAt DateTime @default(now())
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  name       String      @unique
+  createdAt  DateTime    @default(now())
+  challenges challenge[]
 }

@@ -25,17 +25,20 @@ class ChallengeService {
       throw new ValidationError("Deadline must be after the start date");
     }
   }
-  private static async validateSkills(skills: string[]): Promise<void> {
+
+  private static async validateSkills(skillIds: string[]): Promise<void> {
     const existingSkills = await prisma.skill.findMany({
-      where: { name: { in: skills } },
+      where: { id: { in: skillIds } },
     });
 
-    const invalidSkills = skills.filter(
-      (skill) => !existingSkills.some((s) => s.name === skill),
+    const invalidSkillIds = skillIds.filter(
+      (skillId) => !existingSkills.some((s) => s.id === skillId),
     );
 
-    if (invalidSkills.length > 0) {
-      throw new ValidationError(`Invalid skills: ${invalidSkills.join(", ")}`);
+    if (invalidSkillIds.length > 0) {
+      throw new ValidationError(
+        `Invalid skill IDs: ${invalidSkillIds.join(", ")}`,
+      );
     }
   }
 
@@ -223,31 +226,6 @@ class ChallengeService {
     };
   }
 
-  static async getChallengesByStatus(status: "Open" | "Ongoing" | "Completed") {
-    const now = new Date();
-
-    const challenges = await prisma.challenge.findMany({
-      include: { category: true },
-    });
-
-    const updatedChallenges = challenges.map((challenge) => {
-      const { createdAt, startDate, deadline } = challenge;
-      let challengeStatus: "Open" | "Ongoing" | "Completed";
-
-      if (new Date(createdAt) <= now && now < new Date(startDate)) {
-        challengeStatus = "Open";
-      } else if (new Date(startDate) <= now && now < new Date(deadline)) {
-        challengeStatus = "Ongoing";
-      } else {
-        challengeStatus = "Completed";
-      }
-
-      return { ...challenge, status: challengeStatus };
-    });
-
-    return updatedChallenges.filter((challenge) => challenge.status === status);
-  }
-
   static async getSingleChallenge(id: string): Promise<challenge | null> {
     return prisma.challenge.findUnique({
       where: { id },
@@ -268,44 +246,6 @@ class ChallengeService {
 
     await prisma.challenge.delete({ where: { id } });
   }
-
-  // // Search challenges by title, description, or skills
-  // static async searchChallenges(
-  //   searchTerm: string,
-  //   page: number = 1,
-  //   limit: number = 10,
-  // ): Promise<{ challenges: challenge[]; total: number }> {
-  //   if (page < 1 || limit < 1 || limit > 100) {
-  //     throw new ValidationError(
-  //       "Page and limit must be positive integers, and limit cannot exceed 100",
-  //     );
-  //   }
-
-  //   const skip = (page - 1) * limit;
-
-  //   const where: Prisma.challengeWhereInput = {
-  //     OR: [
-  //       { challengeTitle: { contains: searchTerm, mode: "insensitive" } },
-  //       { description: { contains: searchTerm, mode: "insensitive" } },
-  //       { skills: { has: searchTerm } },
-  //     ],
-  //   };
-
-  //   const [challenges, total] = await Promise.all([
-  //     prisma.challenge.findMany({
-  //       where,
-  //       skip,
-  //       take: limit,
-  //       orderBy: { createdAt: "desc" },
-  //       include: {
-  //         category: true,
-  //       },
-  //     }),
-  //     prisma.challenge.count({ where }),
-  //   ]);
-
-  //   return { challenges, total };
-  // }
 }
 
 export default ChallengeService;
